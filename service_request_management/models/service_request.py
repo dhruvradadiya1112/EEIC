@@ -14,8 +14,8 @@ class ServiceRequest(models.Model):
     user_id = fields.Many2one('res.users', string="Assigned To", default=lambda self: self.env.user, tracking=True)
     
     description = fields.Text(string="Description/Instructions")
-    scheduled_date = fields.Date(string="Scheduled Date", required=True)
-    deadline_date = fields.Date(string="Deadline", required=True)
+    scheduled_date = fields.Date(string="Scheduled Date")
+    deadline_date = fields.Date(string="Deadline")
     
     state = fields.Selection([
         ('assigned', 'Assigned'),
