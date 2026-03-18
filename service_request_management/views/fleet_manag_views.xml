@@ -84,29 +84,26 @@
     <field name="target">new</field>
 </record>
 
-<menuitem id="menu_fleet_availability"
-          name="Fleet Availability"
-          parent="menu_fleet_root"
-          action="action_fleet_availability_wizard"
-          sequence="3"/>
-
-
-
 
 <!-- Root Menu -->
 <menuitem id="menu_fleet_root"
           name="Fleet"
-           parent="sale.sale_menu_root" 
+          parent="sale.sale_menu_root" 
           sequence="60"/>
 
-<!-- Sub Menu -->
+<!-- Vehicles -->
 <menuitem id="menu_fleet_management"
           name="Vehicles"
           parent="menu_fleet_root"
           action="action_fleet_management"
           sequence="1"/>
-          
-          
+
+<!-- Fleet Availability -->
+<menuitem id="menu_fleet_availability"
+          name="Fleet Availability"
+          parent="menu_fleet_root"
+          action="action_fleet_availability_wizard"
+          sequence="3"/>
           
 
 </odoo>
