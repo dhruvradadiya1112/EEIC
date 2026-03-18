@@ -43,7 +43,7 @@ class SaleOrder(models.Model):
             'partner_id': self.partner_id.id,
             'sale_order_id': self.id,
             'description': f"Service request for {self.name}",
-            'state': 'assigned',
+            'state': 'draft',
         })
 
         return {

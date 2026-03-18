@@ -3,3 +3,8 @@ access_service_request_user,service.request.user,model_service_request,base.grou
 access_service_request_manager,service.request.manager,model_service_request,base.group_system,1,1,1,1
 access_service_timesheet_user,service.timesheet.user,model_service_timesheet,base.group_user,1,1,1,0
 access_service_timesheet_manager,service.timesheet.manager,model_service_timesheet,base.group_system,1,1,1,1
+
+
+service_request_management.access_fleet_managment,access_fleet_managment,service_request_management.model_fleet_managment,base.group_user,1,1,1,1
+service_request_management.access_fleet_availability_wizard,access_fleet_availability_wizard,service_request_management.model_fleet_availability_wizard,base.group_user,1,1,1,1
+service_request_management.access_fleet_history,access_fleet_history,service_request_management.model_fleet_history,base.group_user,1,1,1,1

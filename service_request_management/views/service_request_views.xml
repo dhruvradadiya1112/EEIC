@@ -26,6 +26,14 @@
             
 
                 <header>
+                 <button name="action_assigned"
+					        type="object"
+					        string="Assigned"
+					        class="btn-primary"
+					        invisible="state != 'draft'"/>
+					        
+					        
+					        
                    <button name="action_start"
 					        type="object"
 					        string="Start Work"
@@ -49,18 +57,18 @@
 					        string="Cancel"
 					        class="btn-secondary"
 					        invisible="state in ['done', 'cancelled']"/>
-                    <field name="state" widget="statusbar" statusbar_visible="assigned,in_progress,done"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,assigned,in_progress,done"/>
                 </header>
                 <sheet>
                 <div class="oe_button_box" name="button_box">
-		    <button name="action_view_invoice"
-		            type="object"
-		            class="oe_stat_button"
-		            icon="fa-file-text-o"
-		            invisible="not invoice_id">
-		        <field name="invoice_count" widget="statinfo" string="Bill" />
-		    </button>
-		</div>
+				    <button name="action_view_invoice"
+				            type="object"
+				            class="oe_stat_button"
+				            icon="fa-file-text-o"
+				            invisible="not invoice_id">
+				        <field name="invoice_count" widget="statinfo" string="Bill" />
+				    </button>
+				</div>
                 
                     <div class="oe_title">
                         <h1>
@@ -71,13 +79,37 @@
                         <group>
                             <field name="partner_id" options="{'no_create': True}" required="1" readonly="1"/>
                             <field name="sale_order_id" options="{'no_create': True}" readonly="1"/>
-                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="user_id" widget="many2one_avatar_user" readonly="state != 'draft'"/>
                         </group>
                         <group>
-                            <field name="scheduled_date"/>
-                            <field name="deadline_date"/>
+                            <field name="scheduled_date" readonly="state != 'draft'"/>
+                            <field name="deadline_date" readonly="state != 'draft'"/>
                         </group>
                     </group>
+                    
+                    
+                   <group>
+					  <field name="is_fleet_required"
+					       readonly="state != 'draft'"/>
+					
+					<field name="fleet_id"
+					       invisible="not is_fleet_required"
+					       readonly="state != 'draft'"/>
+					
+					<field name="from_datetime"
+					       invisible="not is_fleet_required"
+					       readonly="state != 'draft'"/>
+					
+					<field name="to_datetime"
+					       invisible="not is_fleet_required"
+					       readonly="state != 'draft'"/>
+					
+					<field name="duration_hours"
+					       readonly="1"
+					       invisible="not is_fleet_required"/>
+					</group>
+
+
                     
                     <group>
                         <field name="description" placeholder="Add description and instructions..."/>
@@ -85,7 +117,7 @@
 
                     <notebook>
                         <page string="Timesheets" name="timesheets">
-                            <field name="timesheet_ids">
+                            <field name="timesheet_ids" readonly="state == 'done'">
                                 <!-- FIXED: Removed 'active_id' from context and used correct syntax -->
                                 <list editable="bottom" decoration-success="amount>0">
                                     <field name="date"/>
@@ -115,6 +147,7 @@
 
    
 
+
     <!-- Actions and Menus -->
     <record id="action_service_request" model="ir.actions.act_window">
         <field name="name">Service Requests</field>
@@ -130,6 +163,28 @@
             </p>
         </field>
     </record>
+    
+    
+    <record id="view_fleet_calendar" model="ir.ui.view">
+	    <field name="name">fleet.calendar.view</field>
+	    <field name="model">service.request</field>
+	    <field name="arch" type="xml">
+	        <calendar string="Fleet Schedule"
+	                  date_start="from_datetime"
+	                  date_stop="to_datetime"
+	                  color="fleet_id">
+	
+	            <!-- ✅ MUST INCLUDE THESE -->
+	            <field name="name"/>
+	            <field name="fleet_id"/>
+	            <field name="from_datetime"/>
+	            <field name="to_datetime"/>
+	
+	        </calendar>
+	    </field>
+	</record>
+
+
 
     <!-- Menu Items -->
     <menuitem id="menu_service_root" 
@@ -158,6 +213,14 @@
               
               
     
+    
+    
+          
+          
+          
+
+
+
       
       
       

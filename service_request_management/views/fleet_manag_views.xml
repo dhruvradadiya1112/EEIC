@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_fleet_management_tree" model="ir.ui.view">
+    <field name="name">fleet.management.tree</field>
+    <field name="model">fleet.managment</field>
+    <field name="arch" type="xml">
+        <list>
+            <field name="name"/>
+            <field name="number"/>
+        </list>
+    </field>
+</record>
+
+<record id="view_fleet_management_form" model="ir.ui.view">
+    <field name="name">fleet.management.form</field>
+    <field name="model">fleet.managment</field>
+    <field name="arch" type="xml">
+        <form>
+            <sheet>
+                <div class="oe_title">
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                </div>
+
+                <group>
+                    <field name="number"/>
+                </group>
+                
+                <notebook>
+			    <page string="History">
+			        <field name="history_ids" readonly="1">
+			            <list>
+			                <field name="name"/>
+			                <field name="user_id"/>
+			                <field name="from_datetime"/>
+			                <field name="to_datetime"/>
+			                <field name="duration"/>
+			            </list>
+			        </field>
+			    </page>
+			</notebook>
+            </sheet>
+        </form>
+    </field>
+</record>
+
+
+
+
+<record id="action_fleet_management" model="ir.actions.act_window">
+    <field name="name">Fleet Management</field>
+    <field name="res_model">fleet.managment</field>
+    <field name="view_mode">list,form</field>
+</record>
+
+
+<record id="view_fleet_availability_wizard_form" model="ir.ui.view">
+    <field name="name">fleet.availability.wizard.form</field>
+    <field name="model">fleet.availability.wizard</field>
+    <field name="arch" type="xml">
+        <form string="Fleet Availability">
+            <group>
+               <field name="fleet_id" options="{'no_create': True, 'no_open': True, 'no_create_edit': True}"/>
+            </group>
+            <footer>
+                <button name="action_view_calendar"
+                        type="object"
+                        string="View Calendar"
+                        class="btn-primary"/>
+                <button string="Cancel" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+
+
+<record id="action_fleet_availability_wizard" model="ir.actions.act_window">
+    <field name="name">Fleet Availability</field>
+    <field name="res_model">fleet.availability.wizard</field>
+    <field name="view_mode">form</field>
+    <field name="target">new</field>
+</record>
+
+<menuitem id="menu_fleet_availability"
+          name="Fleet Availability"
+          parent="menu_fleet_root"
+          action="action_fleet_availability_wizard"
+          sequence="3"/>
+
+
+
+
+<!-- Root Menu -->
+<menuitem id="menu_fleet_root"
+          name="Fleet"
+           parent="sale.sale_menu_root" 
+          sequence="60"/>
+
+<!-- Sub Menu -->
+<menuitem id="menu_fleet_management"
+          name="Vehicles"
+          parent="menu_fleet_root"
+          action="action_fleet_management"
+          sequence="1"/>
+          
+          
+          
+
+</odoo>

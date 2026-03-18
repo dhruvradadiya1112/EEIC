@@ -18,6 +18,7 @@
          'security/security.xml',
         'views/service_request_views.xml',
         'views/sale_order_views.xml',
+        'views/fleet_manag_views.xml',
         'data/sequence.xml'
     ],
     'demo': [],
