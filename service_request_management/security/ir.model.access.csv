@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_service_request_user,service.request.user,model_service_request,base.group_user,1,1,1,0
+access_service_request_manager,service.request.manager,model_service_request,base.group_system,1,1,1,1
+access_service_timesheet_user,service.timesheet.user,model_service_timesheet,base.group_user,1,1,1,0
+access_service_timesheet_manager,service.timesheet.manager,model_service_timesheet,base.group_system,1,1,1,1

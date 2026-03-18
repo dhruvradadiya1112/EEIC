@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Service Request Tree View -->
+    <record id="view_service_request_tree" model="ir.ui.view">
+        <field name="name">service.request.tree</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state=='done'" decoration-danger="state=='cancelled'" decoration-info="state=='in_progress'">
+                <field name="name"/>
+                <field name="partner_id"/>
+                <field name="user_id" widget="many2one_avatar_user"/>
+                <field name="scheduled_date"/>
+                <field name="total_hours" sum="Total Hours"/>
+                <field name="total_amount" sum="Total Amount" widget="monetary"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+     <record id="view_service_request_form" model="ir.ui.view">
+        <field name="name">service.request.form</field>
+        <field name="model">service.request</field>
+        <field name="arch" type="xml">
+            <form>
+            
+
+                <header>
+                   <button name="action_start"
+					        type="object"
+					        string="Start Work"
+					        class="btn-primary"
+					        invisible="state != 'assigned'"/>
+					
+					<button name="action_done"
+					        type="object"
+					        string="Mark as Done"
+					        class="btn-primary"
+					        invisible="state != 'in_progress'"/>
+					        
+					<button name="action_create_invoice"
+					        type="object"
+					        string="Create Bill"
+					        class="btn-secondary"
+					        invisible="state != 'done' or invoice_id"/>
+					
+					<button name="action_cancel"
+					        type="object"
+					        string="Cancel"
+					        class="btn-secondary"
+					        invisible="state in ['done', 'cancelled']"/>
+                    <field name="state" widget="statusbar" statusbar_visible="assigned,in_progress,done"/>
+                </header>
+                <sheet>
+                <div class="oe_button_box" name="button_box">
+		    <button name="action_view_invoice"
+		            type="object"
+		            class="oe_stat_button"
+		            icon="fa-file-text-o"
+		            invisible="not invoice_id">
+		        <field name="invoice_count" widget="statinfo" string="Bill" />
+		    </button>
+		</div>
+                
+                    <div class="oe_title">
+                        <h1>
+                            <field name="name" readonly="1"/>
+                        </h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="partner_id" options="{'no_create': True}" required="1" readonly="1"/>
+                            <field name="sale_order_id" options="{'no_create': True}" readonly="1"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                        </group>
+                        <group>
+                            <field name="scheduled_date"/>
+                            <field name="deadline_date"/>
+                        </group>
+                    </group>
+                    
+                    <group>
+                        <field name="description" placeholder="Add description and instructions..."/>
+                    </group>
+
+                    <notebook>
+                        <page string="Timesheets" name="timesheets">
+                            <field name="timesheet_ids">
+                                <!-- FIXED: Removed 'active_id' from context and used correct syntax -->
+                                <list editable="bottom" decoration-success="amount>0">
+                                    <field name="date"/>
+                                    <field name="role"/>
+                                    <field name="description"/>
+                                    <field name="hours" sum="Total Hours"/>
+                                    <field name="rate" widget="monetary"/>
+                                    <field name="amount" widget="monetary" sum="Total Amount"/>
+                                </list>
+                                <form>
+                                    <group>
+                                        <field name="date"/>
+                                        <field name="role"/>
+                                        <field name="hours"/>
+                                        <field name="rate" widget="monetary"/>
+                                        <field name="description"/>
+                                    </group>
+                                </form>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+               <chatter/>
+            </form>
+        </field>
+    </record>
+
+   
+
+    <!-- Actions and Menus -->
+    <record id="action_service_request" model="ir.actions.act_window">
+        <field name="name">Service Requests</field>
+        <field name="res_model">service.request</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">
+                Create your first service request!
+            </p>
+            <p>
+                Service requests allow you to manage field service operations,
+                assign employees, and track timesheets.
+            </p>
+        </field>
+    </record>
+
+    <!-- Menu Items -->
+    <menuitem id="menu_service_root" 
+              name="Service" 
+              parent="sale.sale_menu_root" 
+              sequence="50"/>
+
+    <menuitem id="menu_service_request" 
+              name="Service Requests" 
+              parent="menu_service_root" 
+              action="action_service_request" 
+              sequence="10"/>
+              
+              
+              
+              
+              
+              <menuitem 
+    				id="menu_script_management" 
+				    name="Service Management" 
+				    action="action_service_request" 
+				    sequence="1"
+				    web_icon="service_request_management,static/description/icon.png"  groups="group_service_user,group_service_manager,group_service_admin"/>
+              
+              
+              
+              
+    
+      
+      
+      
+      
+      
+      
+
+</odoo>

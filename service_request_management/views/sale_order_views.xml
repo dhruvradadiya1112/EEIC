@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Inherit Sale Order Form View -->
+    <record id="view_order_form_inherit_service" model="ir.ui.view">
+        <field name="name">sale.order.form.inherit.service</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+            
+            <!-- Add button in button box - Create Service Request (always visible) -->
+             <xpath expr="//header" position="inside">
+                <button name="action_create_service_request" 
+                        type="object" 
+                       class="btn-primary"
+                        string="Create Service Request"  invisible="state == 'sale'"/>
+            </xpath>
+            
+            <!-- Add button to view existing service requests -->
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button name="action_view_service_requests" 
+                        type="object" 
+                        class="oe_stat_button" 
+                        icon="fa-tasks"
+                        string="Service Requests"
+                        invisible="service_request_count == 0">
+                    <field name="service_request_count" widget="statinfo"/>
+                </button>
+            </xpath>
+            
+            <!-- Add Service Requests page to notebook -->
+            <xpath expr="//notebook" position="inside">
+                <page string="Service Requests" 
+                      name="service_requests"
+                      invisible="service_request_count == 0">
+                    <field name="service_request_ids" mode="list" readonly="1">
+                        <list default_order="id desc" decoration-info="state=='assigned'" decoration-success="state=='done'" decoration-danger="state=='cancelled'">
+                            <field name="name"/>
+                            <field name="user_id" widget="many2one_avatar_user"/>
+                            <field name="scheduled_date"/>
+                            <field name="total_hours"/>
+                            <field name="total_amount" widget="monetary"/>
+                            <field name="state" widget="badge"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+            
+        </field>
+    </record>
+
+</odoo>

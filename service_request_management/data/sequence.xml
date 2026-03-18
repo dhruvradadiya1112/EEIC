@@ -1,0 +1,9 @@
+<odoo>
+    <record id="seq_service_request" model="ir.sequence">
+        <field name="name">Service Request</field>
+        <field name="code">service.request</field>
+        <field name="prefix">SR/</field>
+        <field name="padding">4</field>
+        <field name="number_increment">1</field>
+    </record>
+</odoo>
