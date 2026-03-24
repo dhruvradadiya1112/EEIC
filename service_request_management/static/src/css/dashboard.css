@@ -56,3 +56,736 @@
     background-color: #dc3545 !important;
     color: white !important;
 }
+
+
+
+/* Dashboard Layout */
+.ed-dashboard {
+    padding: 20px;
+    background: #f5f7fb;
+    min-height: 100vh;
+}
+
+.ed-main-content {
+    display: flex;
+    gap: 20px;
+    max-width: 1600px;
+    margin: 0 auto;
+    align-items: flex-start;
+}
+
+.ed-card {
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.ed-calendar-card {
+    flex: 1;
+    min-width: 0;
+    max-height: calc(100vh - 40px);
+    overflow-y: auto;
+}
+
+.ed-calendar-card::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ed-calendar-card::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.ed-calendar-card::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.ed-calendar-card::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+.ed-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid #e5e7eb;
+}
+
+.ed-card-header h3,
+.ed-card-header h4 {
+    margin: 0;
+}
+
+/* Sidebar Styles - Scrollable */
+.ed-sidebar {
+    flex: 0 0 350px;
+}
+
+.ed-sidebar .ed-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    max-height: calc(100vh - 40px);
+    overflow: hidden;
+    padding: 0;
+}
+
+.ed-sidebar .ed-card-header {
+    flex-shrink: 0;
+    padding: 20px 20px 0 20px;
+}
+
+.ed-sidebar .p-3 {
+    flex: 1;
+    overflow-y: auto;
+    padding: 12px 20px 20px 20px;
+}
+
+/* Custom scrollbar for sidebar */
+.ed-sidebar .p-3::-webkit-scrollbar {
+    width: 6px;
+}
+
+.ed-sidebar .p-3::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 3px;
+}
+
+.ed-sidebar .p-3::-webkit-scrollbar-thumb {
+    background: #c1c1c1;
+    border-radius: 3px;
+}
+
+.ed-sidebar .p-3::-webkit-scrollbar-thumb:hover {
+    background: #a8a8a8;
+}
+
+/* Calendar Styles */
+.ed-calendar-grid {
+    margin-top: 16px;
+}
+
+.ed-calendar-header-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.ed-calendar-header-cell {
+    text-align: center;
+    font-weight: bold;
+    padding: 8px;
+    background: #f3f4f6;
+    border-radius: 6px;
+    font-size: 12px;
+}
+
+.ed-calendar-week-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 4px;
+    margin-bottom: 4px;
+}
+
+.ed-day-cell {
+    min-height: 100px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 6px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+}
+
+.ed-day-cell:hover {
+    background: #f9fafb;
+    border-color: #6366f1;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.ed-day-empty {
+    min-height: 100px;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    padding: 6px;
+    background: #f9fafb;
+    opacity: 0.5;
+}
+
+.ed-day-number {
+    font-weight: bold;
+    margin-bottom: 6px;
+    font-size: 12px;
+}
+
+.ed-weekend {
+    color: #ef4444;
+}
+
+.ed-service-tag {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 2px 6px;
+    margin-top: 3px;
+    border-radius: 6px;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ed-service-tag-fleet {
+    background: linear-gradient(135deg, #10b981, #059669);
+    color: white;
+    padding: 2px 6px;
+    margin-top: 3px;
+    border-radius: 6px;
+    font-size: 10px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ed-calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.ed-nav-btn {
+    background: #f3f4f6;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+}
+
+.ed-nav-btn:hover {
+    background: #e5e7eb;
+}
+
+.ed-month-title {
+    font-size: 16px;
+    font-weight: 600;
+    min-width: 120px;
+    text-align: center;
+}
+
+/* Sidebar Inner Styles */
+.selected-date-badge {
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
+    color: white;
+    padding: 10px;
+    border-radius: 8px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-size: 14px;
+}
+
+.info-section {
+    margin-bottom: 20px;
+}
+
+.section-title {
+    font-size: 13px;
+    font-weight: 600;
+    margin-bottom: 10px;
+    color: #374151;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.title-icon {
+    font-size: 12px;
+}
+
+.user-list,
+.fleet-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.user-item,
+.fleet-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px;
+    border-radius: 6px;
+    font-size: 13px;
+    transition: all 0.2s;
+}
+
+.busy-user-item {
+    background: #fee2e2;
+    border-left: 3px solid #dc2626;
+}
+
+.available-user-item {
+    background: #d1fae5;
+    border-left: 3px solid #10b981;
+}
+
+.busy-fleet-item {
+    background: #fee2e2;
+    border-left: 3px solid #dc2626;
+}
+
+.available-fleet-item {
+    background: #d1fae5;
+    border-left: 3px solid #10b981;
+}
+
+.user-avatar,
+.fleet-icon {
+    font-size: 14px;
+}
+
+.user-name,
+.fleet-name {
+    flex: 1;
+}
+
+.empty-state {
+    text-align: center;
+    color: #9ca3af;
+    padding: 20px;
+    font-size: 13px;
+    font-style: italic;
+}
+
+.click-hint {
+    background: #f3f4f6;
+    border-radius: 8px;
+}
+
+.hint-icon {
+    font-size: 32px;
+    display: block;
+    margin-bottom: 8px;
+}
+
+/* Details Section - Modern UI */
+.ed-details-section {
+    max-width: 1600px;
+    margin: 20px auto 0;
+    padding: 0 20px;
+}
+
+.details-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.details-card {
+    background: white;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.details-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+}
+
+.services-card {
+    border-top: 4px solid #3b82f6;
+}
+
+.fleet-card {
+    border-top: 4px solid #10b981;
+}
+
+.details-card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: #f8fafc;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.header-icon {
+    font-size: 24px;
+}
+
+.details-card-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: #1e293b;
+    flex: 1;
+}
+
+.badge {
+    background: #e2e8f0;
+    color: #475569;
+    padding: 4px 8px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.details-card-body {
+    padding: 20px;
+}
+
+.modern-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modern-list-item {
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    transition: all 0.2s;
+    border: 1px solid #e2e8f0;
+}
+
+.modern-list-item:hover {
+    background: #f1f5f9;
+    border-color: #cbd5e1;
+    transform: translateX(4px);
+}
+
+.item-main {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.item-title {
+    font-size: 14px;
+    color: #0f172a;
+}
+
+.item-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.meta-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 12px;
+    color: #475569;
+    background: white;
+    padding: 4px 8px;
+    border-radius: 6px;
+}
+
+.meta-icon {
+    font-size: 11px;
+}
+
+.status-draft {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.status-confirmed {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.status-completed {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.status-cancelled {
+    background: #fee2e2;
+    color: #991b1b;
+}
+
+.empty-details {
+    text-align: center;
+    padding: 40px 20px;
+}
+
+.empty-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.empty-details p {
+    color: #94a3b8;
+    font-size: 14px;
+    margin: 0;
+}
+
+/* Utility Classes */
+.d-flex {
+    display: flex;
+}
+
+.justify-content-between {
+    justify-content: space-between;
+}
+
+.align-items-center {
+    align-items: center;
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 12px;
+    border: none;
+    font-weight: 500;
+    transition: all 0.2s;
+}
+
+.btn-primary {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-primary:hover {
+    background: #2563eb;
+    transform: translateY(-1px);
+}
+
+.btn-sm {
+    padding: 4px 10px;
+    font-size: 12px;
+}
+
+.mt-2 {
+    margin-top: 8px;
+}
+
+.p-3 {
+    padding: 12px;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
+.text-center {
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 1024px) {
+    .ed-main-content {
+        flex-direction: column;
+    }
+    
+    .ed-sidebar {
+        flex: auto;
+        width: 100%;
+    }
+    
+    .ed-sidebar .ed-card {
+        max-height: 500px;
+    }
+    
+    .details-container {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 768px) {
+    .ed-dashboard {
+        padding: 12px;
+    }
+    
+    .ed-card-header {
+        flex-direction: column;
+        gap: 12px;
+    }
+    
+    .item-meta {
+        flex-direction: column;
+        gap: 6px;
+    }
+    
+    .ed-sidebar .ed-card {
+        max-height: 400px;
+    }
+}
+
+
+/* Add to your existing CSS */
+.clickable-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clickable-item:hover {
+    background: #f1f5f9;
+    transform: translateX(4px);
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.modern-list-item.clickable-item:active {
+    transform: translateX(2px);
+}
+
+/* Optional: Add a subtle indicator */
+.clickable-item::after {
+    content: "↗";
+    float: right;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    color: #3b82f6;
+}
+
+.clickable-item:hover::after {
+    opacity: 0.6;
+}
+
+
+
+/* Add this to your existing CSS for today's date highlighting */
+.ed-day-cell.ed-today {
+    background: linear-gradient(135deg, #fef3c7, #fde68a);
+    border-color: #f59e0b;
+    box-shadow: 0 0 0 2px #f59e0b;
+    position: relative;
+}
+
+.ed-day-cell.ed-today:hover {
+    background: linear-gradient(135deg, #fde68a, #fcd34d);
+    border-color: #d97706;
+}
+
+.ed-day-cell.ed-today .ed-day-number {
+    color: #92400e;
+    font-weight: bold;
+}
+
+.ed-day-cell.ed-today::after {
+    content: "Today";
+    position: absolute;
+    top: 2px;
+    right: 6px;
+    font-size: 8px;
+    background: #f59e0b;
+    color: white;
+    padding: 2px 4px;
+    border-radius: 4px;
+    font-weight: normal;
+}
+
+.ed-day-cell {
+    position: relative;
+}
+
+.clickable-item {
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.clickable-item:hover {
+    background: #f1f5f9;
+    transform: translateX(4px);
+    border-color: #3b82f6;
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.1);
+}
+
+.modern-list-item.clickable-item:active {
+    transform: translateX(2px);
+}
+
+.clickable-item::after {
+    content: "↗";
+    float: right;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    color: #3b82f6;
+}
+
+.clickable-item:hover::after {
+    opacity: 0.6;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* Add this to your existing CSS for selected date highlighting */
+
+/* Selected date styling */
+.ed-day-cell.ed-selected {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+    border-color: #1e40af;
+    box-shadow: 0 0 0 2px #60a5fa;
+    color: white;
+    position: relative;
+}
+
+.ed-day-cell.ed-selected .ed-day-number {
+    color: white;
+    font-weight: bold;
+}
+
+.ed-day-cell.ed-selected .ed-service-tag,
+.ed-day-cell.ed-selected .ed-service-tag-fleet {
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+/* If today is also selected, combine styles */
+.ed-day-cell.ed-today.ed-selected {
+    background: linear-gradient(135deg, #f59e0b, #f97316);
+    border-color: #c2410c;
+    box-shadow: 0 0 0 2px #fbbf24;
+}
+
+.ed-day-cell.ed-today.ed-selected::after {
+    content: "Today";
+    background: #dc2626;
+}
+
+/* Animation for selected date */
+.ed-day-cell.ed-selected {
+    animation: selectedPulse 0.3s ease-in-out;
+}
+
+@keyframes selectedPulse {
+    0% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.7);
+    }
+    70% {
+        transform: scale(1.02);
+        box-shadow: 0 0 0 8px rgba(59, 130, 246, 0);
+    }
+    100% {
+        transform: scale(1);
+        box-shadow: 0 0 0 0 rgba(59, 130, 246, 0);
+    }
+}

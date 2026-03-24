@@ -31,7 +31,7 @@
             'service_request_management/static/src/css/dashboard.css',
             'service_request_management/static/src/js/om_emp_dashboard.js',
             'service_request_management/static/src/xml/om_emp_dashboard.xml',
-            'service_request_management/static/src/scss/om_emp_dashboard.scss',
+            #'service_request_management/static/src/scss/om_emp_dashboard.scss',
         ],
     },
      
