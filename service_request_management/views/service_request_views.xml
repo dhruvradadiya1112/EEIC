@@ -203,11 +203,7 @@
     
     
     <!-- Menu Items -->
-    <menuitem id="menu_service_request" 
-              name="Service Requests" 
-              parent="menu_script_management" 
-              action="action_service_request" 
-              sequence="1"/>
+   
               
    	<record id="om_emp_dashboard_client_action1" model="ir.actions.client">
        <field name="name">Employee Dashboard</field>
@@ -224,6 +220,19 @@
 	    web_icon="service_request_management,static/description/icon.png"  groups="group_service_user,group_service_manager,group_service_admin"/>
               
               
+    <menuitem id="menu_service_request_dash" 
+              name="Dashboard" 
+              parent="menu_script_management" 
+              action="om_emp_dashboard_client_action1" 
+              sequence="1"  groups="group_service_manager,group_service_admin"/>
+              
+              
+              
+   <menuitem id="menu_service_request" 
+              name="Service Requests" 
+              parent="menu_script_management" 
+              action="action_service_request" 
+              sequence="2"/>
               
               
               
