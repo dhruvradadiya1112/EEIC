@@ -22,7 +22,7 @@
         'views/service_dashboard.xml',
         'data/sequence.xml',
         'views/res_users_views.xml',
-        'views/service_calendar.xml'
+        #'views/service_calendar.xml'
         
     ],
     
