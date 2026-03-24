@@ -1,0 +1,270 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <!-- ============================= -->
+        <!-- Holiday Line Views            -->
+        <!-- ============================= -->
+
+        <!-- Holiday Form View (standalone) -->
+        <record id="view_employee_holiday_form" model="ir.ui.view">
+            <field name="name">employee.holiday.form</field>
+            <field name="model">employee.holiday</field>
+            <field name="arch" type="xml">
+                <form string="Holiday">
+                    <sheet>
+                        <group>
+                            <group>
+                                <field name="name"/>
+                                <field name="group_id" required="1"/>
+                                <field name="holiday_type"/>
+                            </group>
+                            <group>
+                                <field name="date"/>
+                                <field name="color" widget="color"/>
+                            </group>
+                        </group>
+                        <field name="description"
+                               placeholder="Description..."/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Holiday List View (standalone) -->
+        <record id="view_employee_holiday_list" model="ir.ui.view">
+            <field name="name">employee.holiday.list</field>
+            <field name="model">employee.holiday</field>
+            <field name="arch" type="xml">
+                <list string="Holidays">
+                    <field name="name"/>
+                    <field name="group_id"/>
+                    <field name="date"/>
+                    <field name="holiday_type"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Holiday Search View -->
+        <record id="view_employee_holiday_search" model="ir.ui.view">
+            <field name="name">employee.holiday.search</field>
+            <field name="model">employee.holiday</field>
+            <field name="arch" type="xml">
+                <search string="Holidays">
+                    <field name="name"/>
+                    <field name="group_id"/>
+                    <field name="holiday_type"/>
+                    <separator/>
+                    <filter name="upcoming" date="date"
+                            default_period="year" string="Period"/>
+                    <separator/>
+                    <filter name="public" string="Public"
+                            domain="[('holiday_type', '=', 'public')]"/>
+                    <filter name="company" string="Company"
+                            domain="[('holiday_type', '=', 'company')]"/>
+                    <group>
+                        <filter name="group_id" string="Group"
+                                context="{'group_by': 'group_id'}"/>
+                        <filter name="group_type" string="Type"
+                                context="{'group_by': 'holiday_type'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Holiday Calendar View -->
+        <record id="view_employee_holiday_calendar" model="ir.ui.view">
+            <field name="name">employee.holiday.calendar</field>
+            <field name="model">employee.holiday</field>
+            <field name="arch" type="xml">
+                <calendar string="Holidays" date_start="date"
+                          mode="month"
+                          quick_create="0" event_open_popup="1">
+                    <field name="name"/>
+                    <field name="holiday_type"/>
+                </calendar>
+            </field>
+        </record>
+
+        <!-- Holiday Action -->
+        <record id="action_employee_holiday" model="ir.actions.act_window">
+            <field name="name">Holidays</field>
+            <field name="res_model">employee.holiday</field>
+            <field name="view_mode">list,form,calendar</field>
+            <field name="search_view_id"
+                   ref="view_employee_holiday_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No holidays found
+                </p>
+                <p>
+                    Holidays are managed inside Holiday Groups. Go to
+                    Holiday Groups to add holidays.
+                </p>
+            </field>
+        </record>
+
+        <!-- Employees Action (for stat button) -->
+        <record id="action_employee_holiday_group_employees"
+                model="ir.actions.act_window">
+            <field name="name">Employees</field>
+            <field name="res_model">hr.employee</field>
+            <field name="view_mode">list,form</field>
+            <field name="domain">[('holiday_group_id', '!=', False)]</field>
+        </record>
+
+        <!-- ============================= -->
+        <!-- Holiday Group Views           -->
+        <!-- ============================= -->
+
+        <!-- Holiday Group Form View -->
+        <record id="view_employee_holiday_group_form" model="ir.ui.view">
+            <field name="name">employee.holiday.group.form</field>
+            <field name="model">employee.holiday.group</field>
+            <field name="arch" type="xml">
+                <form string="Holiday Group">
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="%(om_emp_dashboard.action_employee_holiday)d"
+                                    type="action"
+                                    class="oe_stat_button"
+                                    icon="fa-calendar"
+                                    context="{'search_default_group_id': id}">
+                                <field name="holiday_count" widget="statinfo"
+                                       string="Holidays"/>
+                            </button>
+                            <button name="%(om_emp_dashboard.action_employee_holiday_group_employees)d"
+                                    type="action"
+                                    class="oe_stat_button"
+                                    icon="fa-users"
+                                    context="{'search_default_holiday_group_id': id}">
+                                <field name="employee_count" widget="statinfo"
+                                       string="Employees"/>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="name"/>
+                            <h1>
+                                <field name="name"
+                                       placeholder="e.g. India 2026 Holidays"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="company_id"
+                                       groups="base.group_multi_company"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Holidays" name="holidays">
+                                <field name="holiday_ids">
+                                    <list editable="bottom">
+                                        <field name="name"/>
+                                        <field name="date"/>
+                                        <field name="holiday_type"/>
+                                        <field name="color" widget="color"
+                                               optional="hide"/>
+                                        <field name="description"
+                                               optional="hide"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Description" name="description">
+                                <field name="description"
+                                       placeholder="Add a description for this holiday group..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <!-- Holiday Group List View -->
+        <record id="view_employee_holiday_group_list" model="ir.ui.view">
+            <field name="name">employee.holiday.group.list</field>
+            <field name="model">employee.holiday.group</field>
+            <field name="arch" type="xml">
+                <list string="Holiday Groups">
+                    <field name="name"/>
+                    <field name="holiday_count" string="Holidays"/>
+                    <field name="employee_count" string="Employees"/>
+                    <field name="company_id"
+                           groups="base.group_multi_company"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Holiday Group Search View -->
+        <record id="view_employee_holiday_group_search" model="ir.ui.view">
+            <field name="name">employee.holiday.group.search</field>
+            <field name="model">employee.holiday.group</field>
+            <field name="arch" type="xml">
+                <search string="Holiday Groups">
+                    <field name="name"/>
+                    <group>
+                        <filter name="group_company" string="Company"
+                                context="{'group_by': 'company_id'}"
+                                groups="base.group_multi_company"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Holiday Group Action -->
+        <record id="action_employee_holiday_group" model="ir.actions.act_window">
+            <field name="name">Holiday Groups</field>
+            <field name="res_model">employee.holiday.group</field>
+            <field name="view_mode">list,form</field>
+            <field name="search_view_id"
+                   ref="view_employee_holiday_group_search"/>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Create your first holiday group
+                </p>
+                <p>
+                    Create holiday groups (e.g. India 2026, US 2026) and add
+                    individual holidays inside them. Then assign the group
+                    to employees.
+                </p>
+            </field>
+        </record>
+
+        <!-- ============================= -->
+        <!-- Employee Form Inherit         -->
+        <!-- ============================= -->
+
+        <record id="view_employee_form_inherit_holiday_group"
+                model="ir.ui.view">
+            <field name="name">hr.employee.form.holiday.group</field>
+            <field name="model">hr.employee</field>
+            <field name="inherit_id" ref="hr.view_employee_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//page[@name='work_information']//field[@name='parent_id']"
+                       position="after">
+                    <field name="holiday_group_id"
+                           groups="om_emp_dashboard.group_manage_employee_holidays"/>
+                    <field name="joining_date"/>
+                </xpath>
+            </field>
+        </record>
+
+        <!-- ============================= -->
+        <!-- Menus                         -->
+        <!-- ============================= -->
+
+        <menuitem id="menu_employee_holiday_group"
+                  name="Holiday Groups"
+                  parent="hr.menu_human_resources_configuration"
+                  action="action_employee_holiday_group"
+                  sequence="30"
+                  groups="om_emp_dashboard.group_manage_employee_holidays"/>
+
+        <menuitem id="menu_employee_holiday"
+                  name="Holidays"
+                  parent="hr.menu_human_resources_configuration"
+                  action="action_employee_holiday"
+                  sequence="31"
+                  groups="om_emp_dashboard.group_manage_employee_holidays"/>
+
+    </data>
+</odoo>

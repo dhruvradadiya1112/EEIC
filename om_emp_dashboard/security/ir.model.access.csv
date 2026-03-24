@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_employee_holiday_group_manager,employee.holiday.group.manager,model_employee_holiday_group,om_emp_dashboard.group_manage_employee_holidays,1,1,1,1
+access_employee_holiday_group_user,employee.holiday.group.user,model_employee_holiday_group,base.group_user,1,0,0,0
+access_employee_holiday_manager,employee.holiday.manager,model_employee_holiday,om_emp_dashboard.group_manage_employee_holidays,1,1,1,1
+access_employee_holiday_user,employee.holiday.user,model_employee_holiday,base.group_user,1,0,0,0

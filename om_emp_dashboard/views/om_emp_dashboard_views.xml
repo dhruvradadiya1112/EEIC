@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <data>
+
+        <!-- Client Action -->
+        <record id="om_emp_dashboard_client_action" model="ir.actions.client">
+            <field name="name">Employee Dashboard</field>
+            <field name="tag">om_emp_dashboard_main</field>
+            <field name="context">{}</field>
+        </record>
+
+        <!-- Root Menu -->
+        <menuitem id="menu_om_emp_dashboard_root"
+                  name="Employee Dashboard"
+                  sequence="-10"
+                  web_icon="om_emp_dashboard,static/description/icon.png"/>
+
+        <!-- Sub Menu -->
+        <menuitem id="menu_om_emp_dashboard_main"
+                  name="Dashboard"
+                  parent="menu_om_emp_dashboard_root"
+                  action="om_emp_dashboard_client_action"
+                  sequence="1"/>
+
+    </data>
+</odoo>

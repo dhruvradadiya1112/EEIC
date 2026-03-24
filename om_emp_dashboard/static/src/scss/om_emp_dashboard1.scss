@@ -1,0 +1,933 @@
+/* ===== Employee Dashboard - Modern Glassmorphism UI ===== */
+
+/* ---- CSS Custom Properties ---- */
+:root {
+    --ed-primary: #6366f1;
+    --ed-primary-light: #818cf8;
+    --ed-primary-dark: #4f46e5;
+    --ed-accent: #8b5cf6;
+    --ed-surface: rgba(255, 255, 255, 0.72);
+    --ed-surface-hover: rgba(255, 255, 255, 0.88);
+    --ed-border: rgba(255, 255, 255, 0.5);
+    --ed-border-strong: #ddd6fe;
+    --ed-text-primary: #1e1b4b;
+    --ed-text-secondary: #6b7280;
+    --ed-text-muted: #9ca3af;
+    --ed-shadow-md: 0 4px 16px rgba(99, 102, 241, 0.08), 0 1px 3px rgba(0, 0, 0, 0.04);
+    --ed-shadow-lg: 0 8px 32px rgba(99, 102, 241, 0.12), 0 2px 8px rgba(0, 0, 0, 0.06);
+    --ed-blur: blur(16px);
+    --ed-radius: 18px;
+    --ed-radius-sm: 12px;
+    --ed-transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* ===== Dashboard Container ===== */
+.ed-dashboard {
+    padding: 28px 32px;
+    padding-bottom: 60px;
+    min-height: 100vh;
+    font-family: inherit;
+    position: relative;
+    overflow: visible;
+    background: linear-gradient(135deg, #ede9fe 0%, #e0e7ff 25%, #f0f9ff 50%, #faf5ff 75%, #fce7f3 100%);
+    background-attachment: fixed;
+
+    &::before {
+        content: '';
+        position: fixed;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        background:
+            radial-gradient(ellipse at 20% 50%, rgba(139, 92, 246, 0.08) 0%, transparent 50%),
+            radial-gradient(ellipse at 80% 20%, rgba(99, 102, 241, 0.06) 0%, transparent 50%),
+            radial-gradient(ellipse at 50% 80%, rgba(236, 72, 153, 0.05) 0%, transparent 50%);
+        animation: ed-bg-drift 20s ease-in-out infinite alternate;
+        pointer-events: none;
+        z-index: 0;
+    }
+
+    > * { position: relative; z-index: 1; }
+}
+
+@keyframes ed-bg-drift {
+    0% { transform: translate(0, 0) rotate(0deg); }
+    100% { transform: translate(-2%, -1%) rotate(1deg); }
+}
+
+/* ===== Loading ===== */
+.ed-loading-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(12px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 100;
+    gap: 18px;
+    font-size: 14px;
+    color: var(--ed-text-secondary);
+    font-weight: 600;
+}
+
+.ed-spinner {
+    width: 44px;
+    height: 44px;
+    border: 3px solid #e0e7ff;
+    border-top-color: var(--ed-primary);
+    border-radius: 50%;
+    animation: ed-spin 0.7s linear infinite;
+}
+
+@keyframes ed-spin {
+    to { transform: rotate(360deg); }
+}
+
+.ed-calendar-loading {
+    position: absolute;
+    inset: 0;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(6px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    border-radius: var(--ed-radius);
+}
+
+/* ===== Header ===== */
+.ed-header {
+    margin-bottom: 28px;
+
+    h2 {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--ed-text-primary);
+        letter-spacing: -0.4px;
+        margin: 0 0 6px 0;
+
+        strong {
+            background: linear-gradient(135deg, var(--ed-primary), var(--ed-accent), #ec4899);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    }
+}
+
+/* ===== KPI Cards ===== */
+.ed-kpi-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+    gap: 18px;
+    margin-bottom: 28px;
+}
+
+.ed-kpi-card {
+    background: var(--ed-surface);
+    backdrop-filter: var(--ed-blur);
+    border-radius: var(--ed-radius);
+    padding: 20px 22px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-shadow: var(--ed-shadow-md);
+    border: 1px solid var(--ed-border);
+    transition: all var(--ed-transition);
+    position: relative;
+    overflow: hidden;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(180deg, transparent, transparent);
+        transition: all var(--ed-transition);
+        border-radius: var(--ed-radius) 0 0 var(--ed-radius);
+    }
+
+    &:hover {
+        transform: translateY(-4px);
+        background: var(--ed-surface-hover);
+        box-shadow: var(--ed-shadow-lg);
+
+        .ed-kpi-icon-wrap {
+            transform: scale(1.08);
+        }
+    }
+}
+
+/* Individual card accent bars */
+.ed-kpi-status:hover::before { background: linear-gradient(180deg, #6366f1, #818cf8); }
+.ed-kpi-checkin:hover::before { background: linear-gradient(180deg, #10b981, #34d399); }
+.ed-kpi-checkout:hover::before { background: linear-gradient(180deg, #ef4444, #f87171); }
+.ed-kpi-today-hours:hover::before { background: linear-gradient(180deg, #8b5cf6, #a78bfa); }
+.ed-kpi-total:hover::before { background: linear-gradient(180deg, #14b8a6, #2dd4bf); }
+
+.ed-kpi-icon-wrap {
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 21px;
+    color: #fff;
+    flex-shrink: 0;
+    transition: transform var(--ed-transition);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ed-kpi-icon-blue { background: linear-gradient(135deg, #6366f1, #818cf8); box-shadow: 0 4px 14px rgba(99, 102, 241, 0.35); }
+.ed-kpi-icon-green { background: linear-gradient(135deg, #10b981, #34d399); box-shadow: 0 4px 14px rgba(16, 185, 129, 0.35); }
+.ed-kpi-icon-red { background: linear-gradient(135deg, #ef4444, #f87171); box-shadow: 0 4px 14px rgba(239, 68, 68, 0.35); }
+.ed-kpi-icon-purple { background: linear-gradient(135deg, #8b5cf6, #a78bfa); box-shadow: 0 4px 14px rgba(139, 92, 246, 0.35); }
+.ed-kpi-icon-teal { background: linear-gradient(135deg, #14b8a6, #2dd4bf); box-shadow: 0 4px 14px rgba(20, 184, 166, 0.35); }
+
+.ed-kpi-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.ed-kpi-label {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 0.8px;
+    color: var(--ed-text-muted);
+    font-weight: 700;
+    margin-bottom: 5px;
+}
+
+.ed-kpi-value {
+    font-size: 21px;
+    font-weight: 800;
+    color: var(--ed-text-primary);
+    white-space: nowrap;
+    letter-spacing: -0.4px;
+}
+
+.ed-kpi-expected {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ed-text-muted);
+}
+
+/* ===== Status Badges ===== */
+.ed-status-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 5px 16px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.3px;
+}
+
+.ed-status-present { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #047857; }
+.ed-status-absent { background: linear-gradient(135deg, #fee2e2, #fecaca); color: #b91c1c; }
+.ed-status-dayoff { background: linear-gradient(135deg, #f1f5f9, #e2e8f0); color: #475569; }
+.ed-status-halfday { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; }
+.ed-status-shortday { background: linear-gradient(135deg, #ffedd5, #fed7aa); color: #c2410c; }
+.ed-status-holiday { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #4338ca; }
+.ed-status-upcoming { background: linear-gradient(135deg, #ede9fe, #ddd6fe); color: #6d28d9; }
+.ed-status-public-holiday { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #4338ca; }
+.ed-status-before-joining { background: linear-gradient(135deg, #f1f5f9, #e2e8f0); color: #94a3b8; }
+
+/* ===== Main Content Layout ===== */
+.ed-main-content {
+    display: grid;
+    grid-template-columns: 1fr 380px;
+    gap: 24px;
+    align-items: start;
+}
+
+@media (max-width: 1100px) {
+    .ed-main-content {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ===== Card Base (Glass) ===== */
+.ed-card {
+    background: var(--ed-surface);
+    backdrop-filter: var(--ed-blur);
+    border-radius: var(--ed-radius);
+    box-shadow: var(--ed-shadow-md);
+    border: 1px solid var(--ed-border);
+    overflow: hidden;
+    transition: box-shadow var(--ed-transition);
+
+    &:hover {
+        box-shadow: var(--ed-shadow-lg);
+    }
+}
+
+.ed-card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+    background: rgba(255, 255, 255, 0.4);
+
+    h3, h4 {
+        margin: 0;
+        font-size: 15px;
+        font-weight: 800;
+        color: var(--ed-text-primary);
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        letter-spacing: -0.2px;
+
+        i {
+            color: var(--ed-primary);
+            font-size: 14px;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #eef2ff, #ede9fe);
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(99, 102, 241, 0.12);
+        }
+    }
+}
+
+/* ===== Calendar ===== */
+.ed-calendar-nav {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ed-nav-btn {
+    width: 38px;
+    height: 38px;
+    border: 1px solid var(--ed-border-strong);
+    border-radius: var(--ed-radius-sm);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ed-text-secondary);
+    transition: all var(--ed-transition);
+    font-size: 12px;
+
+    &:hover {
+        background: linear-gradient(135deg, var(--ed-primary), var(--ed-accent));
+        color: #fff;
+        border-color: transparent;
+        box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        transform: scale(1.05);
+    }
+}
+
+.ed-month-title {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--ed-text-primary);
+    margin: 0;
+    min-width: 180px;
+    text-align: center;
+    letter-spacing: -0.3px;
+}
+
+.ed-calendar-legend {
+    display: flex;
+    gap: 16px;
+    font-size: 12px;
+    color: var(--ed-text-secondary);
+    font-weight: 600;
+}
+
+.ed-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+}
+
+.ed-legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+}
+
+.ed-legend-gray { background: linear-gradient(135deg, #94a3b8, #cbd5e1); }
+.ed-legend-absent {
+    background: #fff;
+    border: 2px solid #ef4444;
+    width: 8px;
+    height: 8px;
+    box-shadow: 0 0 4px rgba(239, 68, 68, 0.2);
+}
+.ed-legend-holiday { background: linear-gradient(135deg, #6366f1, #818cf8); }
+
+.ed-calendar-grid {
+    padding: 14px 20px 20px;
+}
+
+.ed-calendar-header-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 10px;
+}
+
+.ed-calendar-header-cell {
+    text-align: center;
+    font-size: 11px;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: var(--ed-text-muted);
+    padding: 10px 0;
+    letter-spacing: 1px;
+    background: rgba(99, 102, 241, 0.04);
+    border-radius: 8px;
+}
+
+.ed-weekend {
+    color: var(--ed-border-strong);
+    background: rgba(139, 92, 246, 0.04);
+}
+
+.ed-calendar-week-row {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.ed-day-cell {
+    min-height: 96px;
+    border: 1.5px solid #e2e8f0;
+    border-radius: var(--ed-radius-sm);
+    padding: 9px 11px;
+    transition: all var(--ed-transition);
+    background: rgba(255, 255, 255, 0.65);
+    backdrop-filter: blur(6px);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.ed-day-empty {
+    min-height: 86px;
+    background: transparent;
+    border-radius: var(--ed-radius-sm);
+}
+
+.ed-day-other-month {
+    background: rgba(248, 250, 252, 0.4);
+    opacity: 0.35;
+    cursor: default;
+    border-color: transparent;
+
+    .ed-day-number { color: #cbd5e1; }
+
+    &:hover {
+        border-color: transparent;
+        background: rgba(248, 250, 252, 0.4);
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.ed-day-before-joining {
+    background: rgba(248, 250, 252, 0.4);
+    opacity: 0.35;
+    cursor: default;
+    border-color: transparent;
+
+    .ed-day-number { color: #cbd5e1; }
+
+    &:hover {
+        border-color: transparent;
+        background: rgba(248, 250, 252, 0.4);
+        transform: none;
+        box-shadow: none;
+    }
+}
+
+.ed-day-off {
+    background: rgba(248, 250, 252, 0.55);
+    border-color: #e2e8f0;
+    border-style: dashed;
+
+    .ed-day-number { color: #94a3b8; }
+
+    &:hover {
+        background: rgba(241, 245, 249, 0.8);
+        border-color: #cbd5e1;
+    }
+}
+
+.ed-day-public-holiday {
+    background: linear-gradient(135deg, rgba(224, 231, 255, 0.6), rgba(237, 233, 254, 0.6));
+    border-color: var(--ed-border-strong);
+    border-left: 4px solid var(--ed-primary);
+
+    .ed-day-number {
+        color: var(--ed-primary-dark);
+        font-weight: 800;
+    }
+
+    &:hover {
+        background: linear-gradient(135deg, rgba(224, 231, 255, 0.85), rgba(237, 233, 254, 0.85));
+        border-color: var(--ed-primary-light);
+    }
+}
+
+.ed-day-absent {
+    border-color: #fca5a5;
+    background: rgba(254, 242, 242, 0.6);
+    border-left: 4px solid #ef4444;
+
+    &:hover {
+        border-color: #f87171;
+        background: rgba(254, 226, 226, 0.7);
+    }
+}
+
+.ed-day-today {
+    border: 2px solid #eab308 !important;
+    background: rgba(254, 252, 232, 0.8) !important;
+    box-shadow:
+        0 0 0 4px rgba(234, 179, 8, 0.12),
+        0 4px 16px rgba(234, 179, 8, 0.15) !important;
+    animation: ed-today-pulse 3s ease-in-out infinite;
+
+    .ed-day-number {
+        color: #fff !important;
+        background: linear-gradient(135deg, #eab308, #f59e0b);
+        width: 28px;
+        height: 28px;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 50%;
+        font-size: 12px;
+        box-shadow: 0 2px 8px rgba(234, 179, 8, 0.4);
+    }
+}
+
+@keyframes ed-today-pulse {
+    0%, 100% { box-shadow: 0 0 0 4px rgba(234, 179, 8, 0.12), 0 4px 16px rgba(234, 179, 8, 0.15); }
+    50% { box-shadow: 0 0 0 6px rgba(234, 179, 8, 0.2), 0 4px 20px rgba(234, 179, 8, 0.22); }
+}
+
+.ed-day-has-data {
+    background: rgba(255, 255, 255, 0.7);
+}
+
+.ed-day-full-hours {
+    background: linear-gradient(135deg, rgba(220, 252, 231, 0.7), rgba(187, 247, 208, 0.5)) !important;
+    border-color: #86efac !important;
+    border-left: 4px solid #22c55e;
+
+    .ed-day-number {
+        color: #15803d;
+    }
+
+    .ed-day-hours-plain {
+        color: #15803d;
+        font-weight: 800;
+    }
+
+    &:hover {
+        background: linear-gradient(135deg, rgba(187, 247, 208, 0.8), rgba(134, 239, 172, 0.5)) !important;
+        border-color: #4ade80 !important;
+        box-shadow: 0 4px 16px rgba(34, 197, 94, 0.15), 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+}
+
+.ed-day-low-hours {
+    background: linear-gradient(135deg, rgba(254, 252, 232, 0.7), rgba(254, 249, 195, 0.5)) !important;
+    border-color: #fde68a !important;
+    border-left: 4px solid #eab308;
+
+    .ed-day-number {
+        color: #a16207;
+    }
+
+    .ed-day-hours-plain {
+        color: #a16207;
+        font-weight: 800;
+    }
+
+    &:hover {
+        background: linear-gradient(135deg, rgba(254, 249, 195, 0.8), rgba(253, 230, 138, 0.5)) !important;
+        border-color: #fcd34d !important;
+        box-shadow: 0 4px 16px rgba(234, 179, 8, 0.15), 0 2px 6px rgba(0, 0, 0, 0.04);
+    }
+}
+
+.ed-day-number {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ed-text-secondary);
+    margin-bottom: 5px;
+    line-height: 1;
+}
+
+.ed-day-hours-plain {
+    margin-top: auto;
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--ed-text-secondary);
+    display: inline-block;
+    margin-bottom: 2px;
+}
+
+.ed-day-absent-label {
+    font-size: 10px;
+    font-weight: 700;
+    color: #dc2626;
+    background: linear-gradient(135deg, #fee2e2, #fecaca);
+    padding: 3px 9px;
+    border-radius: 8px;
+    display: inline-block;
+    letter-spacing: 0.3px;
+    margin-top: auto;
+}
+
+.ed-day-off-label {
+    font-size: 10px;
+    font-weight: 600;
+    color: #64748b;
+    background: rgba(241, 245, 249, 0.8);
+    padding: 3px 9px;
+    border-radius: 8px;
+    display: inline-block;
+    margin-top: auto;
+}
+
+.ed-day-holiday-label {
+    font-size: 9px;
+    font-weight: 700;
+    color: var(--ed-primary-dark);
+    background: linear-gradient(135deg, #eef2ff, #ede9fe);
+    padding: 3px 7px;
+    border-radius: 6px;
+    display: inline-block;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    margin-bottom: 2px;
+    line-height: 1.3;
+    letter-spacing: 0.2px;
+}
+
+/* ===== Sidebar ===== */
+.ed-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    height: calc(100vh - 220px);
+    position: sticky;
+    top: 16px;
+}
+
+/* ===== Upcoming Holidays Card ===== */
+.ed-holidays-card {
+    height: calc(50% - 8px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ed-holidays-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--ed-primary), var(--ed-accent));
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 8px;
+    box-shadow: 0 2px 6px rgba(99, 102, 241, 0.3);
+}
+
+.ed-holidays-list {
+    padding: 0;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.ed-holidays-empty {
+    text-align: center;
+    padding: 36px 16px;
+    color: var(--ed-text-muted);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.ed-holidays-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+
+    thead th {
+        font-size: 10px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 0.6px;
+        color: var(--ed-text-muted);
+        padding: 12px 18px;
+        text-align: left;
+        border-bottom: 1px solid rgba(99, 102, 241, 0.08);
+        background: rgba(248, 250, 252, 0.5);
+    }
+
+    tbody tr {
+        transition: all var(--ed-transition);
+
+        &:hover {
+            background: rgba(238, 242, 255, 0.4);
+        }
+        & + tr td { border-top: 1px solid rgba(241, 245, 249, 0.8); }
+    }
+
+    tbody td {
+        padding: 12px 18px;
+        font-size: 13px;
+        color: var(--ed-text-primary);
+        vertical-align: middle;
+    }
+}
+
+.ed-htable-date {
+    font-weight: 700;
+    color: var(--ed-text-primary);
+    white-space: nowrap;
+}
+
+.ed-htable-day {
+    display: block;
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ed-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin-top: 2px;
+}
+
+.ed-htable-name {
+    font-weight: 600;
+    color: var(--ed-text-primary);
+}
+
+.ed-holiday-type-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 12px;
+    border-radius: 14px;
+    text-transform: capitalize;
+    letter-spacing: 0.2px;
+    white-space: nowrap;
+}
+
+.ed-htype-public { background: linear-gradient(135deg, #e0e7ff, #c7d2fe); color: #4338ca; }
+.ed-htype-company { background: linear-gradient(135deg, #d1fae5, #a7f3d0); color: #047857; }
+.ed-htype-optional { background: linear-gradient(135deg, #fef3c7, #fde68a); color: #b45309; }
+.ed-htype-restricted { background: linear-gradient(135deg, #fce7f3, #fbcfe8); color: #be185d; }
+
+/* ===== Upcoming Celebrations (Birthdays) ===== */
+.ed-birthdays-card {
+    height: calc(50% - 8px);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.ed-birthdays-count {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 24px;
+    height: 24px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, #ec4899, #f472b6);
+    color: #fff;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 0 8px;
+    box-shadow: 0 2px 6px rgba(236, 72, 153, 0.3);
+}
+
+.ed-birthdays-list {
+    padding: 10px 16px 16px;
+    overflow-y: auto;
+    flex: 1;
+}
+
+.ed-birthdays-empty {
+    text-align: center;
+    padding: 32px;
+    color: var(--ed-text-muted);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+
+    i { font-size: 30px; opacity: 0.4; }
+    span { font-weight: 500; }
+}
+
+.ed-bday-row {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 12px 10px;
+    border-radius: var(--ed-radius-sm);
+    transition: all var(--ed-transition);
+
+    &:hover {
+        background: rgba(252, 231, 243, 0.3);
+    }
+    & + & { border-top: 1px solid rgba(241, 245, 249, 0.8); }
+}
+
+.ed-bday-avatar {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 2px solid #fbcfe8;
+    flex-shrink: 0;
+    box-shadow: 0 2px 8px rgba(236, 72, 153, 0.12);
+}
+
+.ed-bday-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.ed-bday-name {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--ed-text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ed-bday-dept {
+    font-size: 11px;
+    color: var(--ed-text-muted);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ed-bday-date-info {
+    text-align: right;
+    flex-shrink: 0;
+}
+
+.ed-bday-date {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ed-text-primary);
+}
+
+.ed-bday-day {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--ed-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.ed-celeb-type-badge {
+    font-size: 10px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    white-space: nowrap;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+
+    i { font-size: 9px; }
+}
+
+.ed-celeb-birthday {
+    background: linear-gradient(135deg, #fce7f3, #fbcfe8);
+    color: #be185d;
+}
+
+.ed-celeb-anniversary {
+    background: linear-gradient(135deg, #ede9fe, #ddd6fe);
+    color: #6d28d9;
+}
+
+/* ===== Scrollbar Styling ===== */
+.ed-holidays-list,
+.ed-birthdays-list {
+    &::-webkit-scrollbar {
+        width: 5px;
+    }
+    &::-webkit-scrollbar-track {
+        background: transparent;
+    }
+    &::-webkit-scrollbar-thumb {
+        background: rgba(99, 102, 241, 0.15);
+        border-radius: 10px;
+
+        &:hover {
+            background: rgba(99, 102, 241, 0.3);
+        }
+    }
+}
+
+/* ===== Odoo Action Container Overrides ===== */
+/* Ensure the Odoo wrapper allows the dashboard to scroll fully */
+.o_action_manager .o_action:has(.ed-dashboard) {
+    overflow: visible !important;
+    height: auto !important;
+    min-height: 0 !important;
+}
+
+.o_action_manager:has(.ed-dashboard) {
+    overflow: auto !important;
+    height: 100% !important;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 768px) {
+    .ed-dashboard { padding: 16px; }
+
+    .ed-kpi-row {
+        grid-template-columns: repeat(auto-fit, minmax(155px, 1fr));
+        gap: 12px;
+    }
+
+    .ed-kpi-card { padding: 16px 18px; }
+    .ed-kpi-value { font-size: 18px; }
+    .ed-calendar-header-cell { font-size: 10px; }
+
+    .ed-day-cell {
+        min-height: 64px;
+        padding: 5px 7px;
+    }
+
+    .ed-calendar-legend { flex-wrap: wrap; gap: 10px; }
+    .ed-day-holiday-label { font-size: 8px; }
+}

@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates id="template" xml:space="preserve">
+
+    <t t-name="EmployeeDashboardMain">
+        <div class="ed-dashboard">
+            <!-- Loading Overlay -->
+            <div t-if="state.isLoading" class="ed-loading-overlay">
+                <div class="ed-spinner"/>
+                <span>Loading Dashboard...</span>
+            </div>
+
+            <!-- Welcome Header -->
+            <div class="ed-header">
+                <h2>Welcome back, <strong t-esc="state.currentEmployeeName"/>!</h2>
+            </div>
+
+            <!-- KPI Cards Row -->
+            <div class="ed-kpi-row">
+                <div class="ed-kpi-card ed-kpi-status">
+                    <div class="ed-kpi-icon-wrap ed-kpi-icon-blue">
+                        <i class="fa fa-user-circle"/>
+                    </div>
+                    <div class="ed-kpi-content">
+                        <div class="ed-kpi-label">Today's Status</div>
+                        <div class="ed-kpi-value">
+                            <span t-attf-class="ed-status-badge #{getStatusClass(state.kpi.today_status || 'absent')}">
+                                <t t-esc="getStatusLabel(state.kpi.today_status || 'absent')"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ed-kpi-card ed-kpi-checkin">
+                    <div class="ed-kpi-icon-wrap ed-kpi-icon-green">
+                        <i class="fa fa-sign-in"/>
+                    </div>
+                    <div class="ed-kpi-content">
+                        <div class="ed-kpi-label">Check In</div>
+                        <div class="ed-kpi-value" t-esc="state.kpi.today_check_in || '--:--'"/>
+                    </div>
+                </div>
+
+                <div class="ed-kpi-card ed-kpi-checkout">
+                    <div class="ed-kpi-icon-wrap ed-kpi-icon-red">
+                        <i class="fa fa-sign-out"/>
+                    </div>
+                    <div class="ed-kpi-content">
+                        <div class="ed-kpi-label">Check Out</div>
+                        <div class="ed-kpi-value" t-esc="state.kpi.today_check_out || '--:--'"/>
+                    </div>
+                </div>
+
+                <div class="ed-kpi-card ed-kpi-today-hours">
+                    <div class="ed-kpi-icon-wrap ed-kpi-icon-purple">
+                        <i class="fa fa-clock-o"/>
+                    </div>
+                    <div class="ed-kpi-content">
+                        <div class="ed-kpi-label">Today's Hours</div>
+                        <div class="ed-kpi-value">
+                            <t t-esc="formatHours(state.kpi.today_worked || 0)"/>
+                            <span class="ed-kpi-expected" t-if="state.kpi.today_expected">
+                                / <t t-esc="formatHours(state.kpi.today_expected)"/>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="ed-kpi-card ed-kpi-total">
+                    <div class="ed-kpi-icon-wrap ed-kpi-icon-teal">
+                        <i class="fa fa-calendar-check-o"/>
+                    </div>
+                    <div class="ed-kpi-content">
+                        <div class="ed-kpi-label">Working Days</div>
+                        <div class="ed-kpi-value">
+                            <t t-esc="state.kpi.working_days || 0"/>
+                            <span class="ed-kpi-expected" t-if="state.kpi.scheduled_days">
+                                / <t t-esc="state.kpi.scheduled_days"/> days
+                            </span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Main Content: Calendar + Sidebar -->
+            <div class="ed-main-content">
+
+                <!-- Calendar Section -->
+                <div class="ed-calendar-section">
+                    <div class="ed-card" style="position:relative;">
+                        <!-- Calendar-only spinner overlay -->
+                        <div t-if="state.isCalendarLoading" class="ed-calendar-loading">
+                            <div class="ed-spinner"/>
+                        </div>
+                        <div class="ed-card-header">
+                            <div class="ed-calendar-nav">
+                                <button type="button" class="ed-nav-btn" t-on-click="onPrevMonth">
+                                    <i class="fa fa-chevron-left"/>
+                                </button>
+                                <h3 class="ed-month-title">
+                                    <t t-esc="state.monthName"/> <t t-esc="state.year"/>
+                                </h3>
+                                <button type="button" class="ed-nav-btn" t-on-click="onNextMonth">
+                                    <i class="fa fa-chevron-right"/>
+                                </button>
+                            </div>
+                            <div class="ed-calendar-legend">
+                                <span class="ed-legend-item">
+                                    <span class="ed-legend-dot ed-legend-gray"/>
+                                    Off Day
+                                </span>
+                                <span class="ed-legend-item">
+                                    <span class="ed-legend-dot ed-legend-absent"/>
+                                    Absent
+                                </span>
+                                <span class="ed-legend-item">
+                                    <span class="ed-legend-dot ed-legend-holiday"/>
+                                    Holiday
+                                </span>
+                            </div>
+                        </div>
+                        <div class="ed-calendar-grid">
+                            <div class="ed-calendar-header-row">
+                                <div class="ed-calendar-header-cell">Mon</div>
+                                <div class="ed-calendar-header-cell">Tue</div>
+                                <div class="ed-calendar-header-cell">Wed</div>
+                                <div class="ed-calendar-header-cell">Thu</div>
+                                <div class="ed-calendar-header-cell">Fri</div>
+                                <div class="ed-calendar-header-cell ed-weekend">Sat</div>
+                                <div class="ed-calendar-header-cell ed-weekend">Sun</div>
+                            </div>
+                            <t t-foreach="state.calendarWeeks" t-as="week" t-key="week_index">
+                                <div class="ed-calendar-week-row">
+                                    <t t-foreach="week" t-as="cell" t-key="cell.dateStr">
+                                        <div t-att-class="getDayClass(cell)">
+                                            <div class="ed-day-number" t-esc="cell.day"/>
+                                            <t t-if="!cell.isOtherMonth">
+                                                <!-- Holiday name label -->
+                                                <t t-if="cell.holidayName">
+                                                    <div class="ed-day-holiday-label"
+                                                         t-att-title="cell.holidayName"
+                                                         t-esc="cell.holidayName"/>
+                                                </t>
+                                                <!-- Hours display -->
+                                                <t t-if="cell.hasData">
+                                                    <div class="ed-day-hours-plain">
+                                                        <t t-esc="formatHours(cell.totalHours)"/>
+                                                    </div>
+                                                </t>
+                                                <!-- Day status indicator -->
+                                                <t t-elif="cell.dayStatus === 'absent'">
+                                                    <div class="ed-day-absent-label">Absent</div>
+                                                </t>
+                                                <t t-elif="cell.isPublicHoliday"/>
+                                                <t t-elif="!cell.isWorkingDay">
+                                                    <div class="ed-day-off-label">Off</div>
+                                                </t>
+                                            </t>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                        </div>
+                    </div>
+
+                </div>
+
+                <!-- Right Sidebar -->
+                <div class="ed-sidebar">
+                    <!-- Upcoming Holidays -->
+                    <div class="ed-card ed-holidays-card">
+                        <div class="ed-card-header">
+                            <h4><i class="fa fa-calendar"/> Upcoming Holidays</h4>
+                            <t t-if="state.upcomingHolidays.length > 0">
+                                <span class="ed-holidays-count">
+                                    <t t-esc="state.upcomingHolidays.length"/>
+                                </span>
+                            </t>
+                        </div>
+                        <div class="ed-holidays-list">
+                            <t t-if="state.upcomingHolidays.length === 0">
+                                <div class="ed-holidays-empty">
+                                    <span>No upcoming holidays</span>
+                                </div>
+                            </t>
+                            <t t-if="state.upcomingHolidays.length > 0">
+                                <table class="ed-holidays-table">
+                                    <thead>
+                                        <tr>
+                                            <th>Date</th>
+                                            <th>Name</th>
+                                            <th>Type</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <t t-foreach="state.upcomingHolidays" t-as="hol" t-key="hol_index">
+                                            <tr>
+                                                <td class="ed-htable-date">
+                                                    <t t-esc="hol.date_short"/>
+                                                    <span class="ed-htable-day" t-esc="hol.day_name"/>
+                                                </td>
+                                                <td class="ed-htable-name" t-esc="hol.name"/>
+                                                <td>
+                                                    <span t-attf-class="ed-holiday-type-badge ed-htype-#{hol.holiday_type}"
+                                                          t-esc="getHolidayTypeLabel(hol.holiday_type)"/>
+                                                </td>
+                                            </tr>
+                                        </t>
+                                    </tbody>
+                                </table>
+                            </t>
+                        </div>
+                    </div>
+
+                    <!-- Upcoming Celebrations (Birthdays) -->
+                    <div class="ed-card ed-birthdays-card">
+                        <div class="ed-card-header">
+                            <h4><i class="fa fa-birthday-cake"/> Upcoming Celebrations</h4>
+                            <t t-if="state.upcomingBirthdays.length > 0">
+                                <span class="ed-birthdays-count">
+                                    <t t-esc="state.upcomingBirthdays.length"/>
+                                </span>
+                            </t>
+                        </div>
+                        <div class="ed-birthdays-list">
+                            <t t-if="state.upcomingBirthdays.length === 0">
+                                <div class="ed-birthdays-empty">
+                                    <i class="fa fa-birthday-cake"/>
+                                    <span>No upcoming birthdays</span>
+                                </div>
+                            </t>
+                            <t t-if="state.upcomingBirthdays.length > 0">
+                                <t t-foreach="state.upcomingBirthdays" t-as="bday" t-key="bday_index">
+                                    <div class="ed-bday-row">
+                                        <img t-att-src="bday.avatar_url"
+                                             class="ed-bday-avatar"
+                                             alt="Avatar"
+                                             loading="lazy"/>
+                                        <div class="ed-bday-info">
+                                            <div class="ed-bday-name" t-esc="bday.name"/>
+                                            <div class="ed-bday-dept" t-if="bday.job_title" t-esc="bday.job_title"/>
+                                            <div class="ed-bday-dept" t-elif="bday.department" t-esc="bday.department"/>
+                                        </div>
+                                        <div class="ed-bday-date-info">
+                                            <div class="ed-bday-date" t-esc="bday.date_short"/>
+                                            <div class="ed-bday-day" t-esc="bday.day_name"/>
+                                        </div>
+                                        <span t-attf-class="ed-celeb-type-badge #{bday.type === 'birthday' ? 'ed-celeb-birthday' : 'ed-celeb-anniversary'}">
+                                            <t t-if="bday.type === 'birthday'">
+                                                <i class="fa fa-birthday-cake"/> Birthday
+                                            </t>
+                                            <t t-else="">
+                                                <i class="fa fa-trophy"/> <t t-esc="bday.years"/>yr
+                                            </t>
+                                        </span>
+                                    </div>
+                                </t>
+                            </t>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </t>
+
+</templates>
