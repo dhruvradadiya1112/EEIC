@@ -1,0 +1,58 @@
+/* Dashboard Card Base */
+.o_dashboard_card {
+    border-radius: 12px;
+    min-height: 120px;
+    border: none;
+    width: 100%;
+    text-align: center;
+    padding: 20px;
+    transition: 0.3s;
+    font-weight: bold;
+}
+
+/* Hover Effect */
+.o_dashboard_card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+}
+
+/* Text */
+.o_dashboard_card h2 {
+    font-size: 32px;
+    margin: 0;
+}
+
+.o_dashboard_card div {
+    font-size: 16px;
+}
+
+/* Colors */
+.bg-total {
+    background-color: #007bff !important;
+    color: white !important;
+}
+
+.bg-draft {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.bg-assigned {
+    background-color: #17a2b8 !important;
+    color: white !important;
+}
+
+.bg-progress {
+    background-color: #ffc107 !important;
+    color: black !important;
+}
+
+.bg-done {
+    background-color: #28a745 !important;
+    color: white !important;
+}
+
+.bg-cancel {
+    background-color: #dc3545 !important;
+    color: white !important;
+}

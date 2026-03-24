@@ -34,9 +34,8 @@
 			            <list>
 			                <field name="name"/>
 			                <field name="user_id"/>
-			                <field name="from_datetime"/>
-			                <field name="to_datetime"/>
-			                <field name="duration"/>
+			                <field name="scheduled_date"/>
+			                <field name="state"/>
 			            </list>
 			        </field>
 			    </page>
@@ -77,6 +76,30 @@
 
 
 
+<record id="view_service_reschedule_wizard_form" model="ir.ui.view">
+    <field name="name">service.reschedule.wizard.form</field>
+    <field name="model">service.reschedule.wizard</field>
+    <field name="arch" type="xml">
+        <form string="Reschedule Service">
+            <group>
+                <field name="scheduled_date"/>
+            </group>
+            <footer>
+                <button name="action_reschedule"
+                        type="object"
+                        string="Confirm"
+                        class="btn-primary"/>
+                <button string="Cancel" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+
+
+
+
+
 <record id="action_fleet_availability_wizard" model="ir.actions.act_window">
     <field name="name">Fleet Availability</field>
     <field name="res_model">fleet.availability.wizard</field>
@@ -88,22 +111,23 @@
 <!-- Root Menu -->
 <menuitem id="menu_fleet_root"
           name="Fleet"
-          parent="sale.sale_menu_root" 
-          sequence="60"/>
+          parent="menu_script_management" 
+          action="action_fleet_management"
+          sequence="2" groups="group_service_manager,group_service_admin" />
 
 <!-- Vehicles -->
-<menuitem id="menu_fleet_management"
+<!-- <menuitem id="menu_fleet_management"
           name="Vehicles"
           parent="menu_fleet_root"
           action="action_fleet_management"
           sequence="1"/>
 
-<!-- Fleet Availability -->
+Fleet Availability
 <menuitem id="menu_fleet_availability"
           name="Fleet Availability"
           parent="menu_fleet_root"
           action="action_fleet_availability_wizard"
-          sequence="3"/>
+          sequence="2"/> -->
           
 
 </odoo>

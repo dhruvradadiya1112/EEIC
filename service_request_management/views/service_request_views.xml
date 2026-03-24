@@ -57,6 +57,19 @@
 					        string="Cancel"
 					        class="btn-secondary"
 					        invisible="state in ['done', 'cancelled']"/>
+					        
+					<button name="action_open_assign_wizard"
+				        string="Reassign"
+				        type="object"
+				        class="btn-primary"
+				        invisible="state in ['draft','done', 'cancelled','in_progress']"/>
+				        
+				        
+				        <button name="action_open_reschedule_wizard"
+					        type="object"
+					        string="Reschedule"
+					        class="btn-warning"
+					        invisible="state in ['draft','done', 'cancelled','in_progress']"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,assigned,in_progress,done"/>
                 </header>
                 <sheet>
@@ -77,13 +90,12 @@
                     </div>
                     <group>
                         <group>
-                            <field name="partner_id" options="{'no_create': True}" required="1" readonly="1"/>
-                            <field name="sale_order_id" options="{'no_create': True}" readonly="1"/>
-                            <field name="user_id" widget="many2one_avatar_user" readonly="state != 'draft'"/>
+                            <field name="partner_id" options="{'no_create': True}" required="1" readonly="state != 'draft'"/>
+                            <field name="sale_order_id" options="{'no_create': True}" readonly="state != 'draft'"/>
+                            <field name="user_id"  required="1" widget="many2one_avatar_user" readonly="state != 'draft'"/>
                         </group>
                         <group>
                             <field name="scheduled_date" readonly="state != 'draft'"/>
-                            <field name="deadline_date" readonly="state != 'draft'"/>
                         </group>
                     </group>
                     
@@ -96,17 +108,12 @@
 					       invisible="not is_fleet_required"
 					       readonly="state != 'draft'"/>
 					
-					<field name="from_datetime"
+					<field name="fleet_scheduled_date"
 					       invisible="not is_fleet_required"
 					       readonly="state != 'draft'"/>
 					
-					<field name="to_datetime"
-					       invisible="not is_fleet_required"
-					       readonly="state != 'draft'"/>
 					
-					<field name="duration_hours"
-					       readonly="1"
-					       invisible="not is_fleet_required"/>
+					
 					</group>
 
 
@@ -138,6 +145,17 @@
                                 </form>
                             </field>
                         </page>
+                        <page string="Assign History">
+						    <field name="assign_history_ids" readonly="1">
+						        <list>
+						            <field name="old_user_id"/>
+						            <field name="new_user_id"/>
+						            <field name="changed_by"/>
+						            <field name="reason"/>
+						            <field name="create_date" string="Change on"/>
+						        </list>
+						    </field>
+						</page>
                     </notebook>
                 </sheet>
                <chatter/>
@@ -145,7 +163,26 @@
         </field>
     </record>
 
-   
+
+<record id="view_service_assign_wizard_form" model="ir.ui.view">
+    <field name="name">service.assign.wizard.form</field>
+    <field name="model">service.assign.wizard</field>
+    <field name="arch" type="xml">
+        <form string="Reassign User">
+            <group>
+                <field name="new_user_id" required="1"/>
+                <field name="reason" required="1"/>
+            </group>
+            <footer>
+                <button name="action_assign" type="object"
+                        string="Assign" class="btn-primary"/>
+                <button string="Cancel" special="cancel"/>
+            </footer>
+        </form>
+    </field>
+</record>
+
+
 
 
     <!-- Actions and Menus -->
@@ -165,49 +202,26 @@
     </record>
     
     
-    <record id="view_fleet_calendar" model="ir.ui.view">
-	    <field name="name">fleet.calendar.view</field>
-	    <field name="model">service.request</field>
-	    <field name="arch" type="xml">
-	        <calendar string="Fleet Schedule"
-	                  date_start="from_datetime"
-	                  date_stop="to_datetime"
-	                  color="fleet_id">
-	
-	            <!-- ✅ MUST INCLUDE THESE -->
-	            <field name="name"/>
-	            <field name="fleet_id"/>
-	            <field name="from_datetime"/>
-	            <field name="to_datetime"/>
-	
-	        </calendar>
-	    </field>
-	</record>
-
-
-
     <!-- Menu Items -->
-    <menuitem id="menu_service_root" 
-              name="Service" 
-              parent="sale.sale_menu_root" 
-              sequence="50"/>
-
     <menuitem id="menu_service_request" 
               name="Service Requests" 
-              parent="menu_service_root" 
+              parent="menu_script_management" 
               action="action_service_request" 
-              sequence="10"/>
+              sequence="1"/>
+              
+              
+   
               
               
               
               
+  <menuitem 
+		id="menu_script_management" 
+	    name="Service Management" 
+	    action="om_emp_dashboard_client_action1" 
+	    sequence="1"
+	    web_icon="service_request_management,static/description/icon.png"  groups="group_service_user,group_service_manager,group_service_admin"/>
               
-              <menuitem 
-    				id="menu_script_management" 
-				    name="Service Management" 
-				    action="action_service_request" 
-				    sequence="1"
-				    web_icon="service_request_management,static/description/icon.png"  groups="group_service_user,group_service_manager,group_service_admin"/>
               
               
               

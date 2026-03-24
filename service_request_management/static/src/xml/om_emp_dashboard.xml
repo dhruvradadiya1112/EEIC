@@ -1,0 +1,292 @@
+<templates xml:space="preserve">
+
+<t t-name="ServiceDashboard">
+
+<div class="ed-dashboard">
+    <div class="ed-main-content">
+        <!-- LEFT - Calendar Section -->
+        <div class="ed-card ed-calendar-card">
+            <div class="ed-card-header">
+                <h3>Service Calendar</h3>
+                <div class="ed-calendar-nav">
+                    <button class="ed-nav-btn" t-on-click="prevMonth">◀</button>
+                    <div class="ed-month-title">
+                        <t t-esc="state.monthName" /> <t t-esc="state.year" />
+                    </div>
+                    <button class="ed-nav-btn" t-on-click="nextMonth">▶</button>
+                </div>
+            </div>
+
+            <div class="ed-calendar-grid">
+                <!-- HEADER - Monday to Sunday -->
+                <div class="ed-calendar-header-row">
+                    <div class="ed-calendar-header-cell">Mon</div>
+                    <div class="ed-calendar-header-cell">Tue</div>
+                    <div class="ed-calendar-header-cell">Wed</div>
+                    <div class="ed-calendar-header-cell">Thu</div>
+                    <div class="ed-calendar-header-cell">Fri</div>
+                    <div class="ed-calendar-header-cell ed-weekend">Sat</div>
+                    <div class="ed-calendar-header-cell ed-weekend">Sun</div>
+                </div>
+
+                <!-- BODY -->
+                <t t-foreach="state.calendarWeeks" t-as="week" t-key="week_index">
+                    <div class="ed-calendar-week-row">
+                        <t t-foreach="week" t-as="cell" t-key="cell.dateStr || cell_index">
+                            <div t-att-class="cell.isOtherMonth ? 'ed-day-empty' : 
+                                              (cell.isToday ? 
+                                                (cell.isSelected ? 'ed-day-cell ed-today ed-selected' : 'ed-day-cell ed-today') : 
+                                                (cell.isSelected ? 'ed-day-cell ed-selected' : 'ed-day-cell'))"
+                                 t-on-click="onDateClick.bind(this, cell)">
+                                <t t-if="!cell.isOtherMonth">
+                                    <div class="ed-day-number">
+                                        <t t-esc="cell.day" />
+                                    </div>
+
+                                    <!-- SERVICE DATA -->
+                                    <t t-foreach="cell.services" t-as="srv" t-key="srv.id">
+                                        <div class="ed-service-tag" t-att-class="getServiceTagStyle(srv.type)">
+                                            <t t-esc="srv.name" />
+                                        </div>
+                                    </t>
+
+                                    <!-- FLEET HISTORY DATA -->
+                                    <t t-foreach="cell.fleetHistory" t-as="fh" t-key="fh.id">
+                                        <div class="ed-service-tag-fleet">
+                                            🚚 <t t-esc="fh.fleet_name" />
+                                        </div>
+                                    </t>
+                                </t>
+                            </div>
+                        </t>
+                    </div>
+                </t>
+            </div>
+        </div>
+
+        <!-- RIGHT - Sidebar Section -->
+        <div class="ed-sidebar">
+            <div class="ed-card">
+                <div class="ed-card-header d-flex justify-content-between align-items-center">
+                    <h4>Service Details</h4>
+                    <button class="btn btn-primary btn-sm" t-on-click="openCreateForm">+</button>
+                </div>
+
+                <div class="p-3">
+                    <t t-if="state.selectedDate">
+                        <div class="selected-date-badge">
+                            📅 <strong><t t-esc="state.selectedDate"/></strong>
+                        </div>
+
+                        <!-- 🔴 BUSY USERS -->
+                        <div class="info-section">
+                            <h5 class="section-title">
+                                <span class="title-icon">🔴</span>
+                                Not Available Users
+                            </h5>
+                            <t t-if="state.busyUsers.length">
+                                <div class="user-list">
+                                    <t t-foreach="state.busyUsers" t-as="u" t-key="u.id">
+                                        <div class="user-item busy-user-item">
+                                            <span class="user-avatar">👤</span>
+                                            <span class="user-name"><t t-esc="u.name"/></span>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                            <t t-if="!state.busyUsers.length">
+                                <div class="empty-state">No busy users</div>
+                            </t>
+                        </div>
+
+                        <!-- 🟢 AVAILABLE USERS -->
+                        <div class="info-section">
+                            <h5 class="section-title">
+                                <span class="title-icon">🟢</span>
+                                Available Users
+                            </h5>
+                            <t t-if="state.availableUsers.length">
+                                <div class="user-list">
+                                    <t t-foreach="state.availableUsers" t-as="u" t-key="u.id">
+                                        <div class="user-item available-user-item">
+                                            <span class="user-avatar">👤</span>
+                                            <span class="user-name"><t t-esc="u.name"/></span>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                            <t t-if="!state.availableUsers.length">
+                                <div class="empty-state">No available users</div>
+                            </t>
+                        </div>
+
+                        <!-- 🔴 BUSY FLEETS -->
+                        <div class="info-section">
+                            <h5 class="section-title">
+                                <span class="title-icon">🔴</span>
+                                Not Available Fleets
+                            </h5>
+                            <t t-if="state.busyFleets.length">
+                                <div class="fleet-list">
+                                    <t t-foreach="state.busyFleets" t-as="f" t-key="f.id">
+                                        <div class="fleet-item busy-fleet-item">
+                                            <span class="fleet-icon">🚛</span>
+                                            <span class="fleet-name"><t t-esc="f.display_name"/></span>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                            <t t-if="!state.busyFleets.length">
+                                <div class="empty-state">No busy fleets</div>
+                            </t>
+                        </div>
+
+                        <!-- 🟢 AVAILABLE FLEETS -->
+                        <div class="info-section">
+                            <h5 class="section-title">
+                                <span class="title-icon">🟢</span>
+                                Available Fleets
+                            </h5>
+                            <t t-if="state.availableFleets.length">
+                                <div class="fleet-list">
+                                    <t t-foreach="state.availableFleets" t-as="f" t-key="f.id">
+                                        <div class="fleet-item available-fleet-item">
+                                            <span class="fleet-icon">🚛</span>
+                                            <span class="fleet-name"><t t-esc="f.display_name"/></span>
+                                        </div>
+                                    </t>
+                                </div>
+                            </t>
+                            <t t-if="!state.availableFleets.length">
+                                <div class="empty-state">No available fleets</div>
+                            </t>
+                        </div>
+
+                    </t>
+
+                    <t t-if="!state.selectedDate">
+                        <div class="empty-state click-hint">
+                            <span class="hint-icon">📅</span>
+                            <p>Click a date to view details</p>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Services and Fleet Assignments - Improved UI -->
+    <div class="ed-details-section">
+        <div class="details-container">
+            <!-- SERVICES CARD -->
+            <div class="details-card services-card">
+                <div class="details-card-header">
+                    <div class="header-icon">📋</div>
+                    <h3>Services</h3>
+                    <span class="badge" t-if="state.selectedServices.length">
+                        <t t-esc="state.selectedServices.length"/>
+                    </span>
+                </div>
+                <div class="details-card-body">
+                    <t t-if="state.selectedServices.length">
+                        <div class="modern-list">
+                            <t t-foreach="state.selectedServices" t-as="srv" t-key="srv.id">
+                                <div class="modern-list-item clickable-item" 
+                                     t-on-click="openServiceRequest.bind(this, srv.id)"
+                                     t-att-data-id="srv.id">
+                                    <div class="item-main">
+                                        <div class="item-title">
+                                            <strong><t t-esc="srv.name"/></strong>
+                                        </div>
+                                        <div class="item-meta">
+                                            <span class="meta-tag">
+                                                <span class="meta-icon">👤</span>
+                                                <t t-esc="srv.user"/>
+                                            </span>
+                                            <span class="meta-tag">
+                                                <span class="meta-icon">📅</span>
+                                                <t t-esc="srv.date"/>
+                                            </span>
+                                            <t t-if="srv.fleet_name">
+                                                <span class="meta-tag">
+                                                    <span class="meta-icon">🚛</span>
+                                                    <t t-esc="srv.fleet_name"/>
+                                                </span>
+                                            </t>
+                                            <t t-if="srv.state">
+                                                <span class="meta-tag" t-att-class="'status-' + srv.state.toLowerCase()">
+                                                    <span class="meta-icon">📊</span>
+                                                    <t t-esc="srv.state"/>
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-if="!state.selectedServices.length">
+                        <div class="empty-details">
+                            <div class="empty-icon">📭</div>
+                            <p>No services scheduled</p>
+                        </div>
+                    </t>
+                </div>
+            </div>
+
+            <!-- FLEET ASSIGNMENTS CARD -->
+            <div class="details-card fleet-card">
+                <div class="details-card-header">
+                    <div class="header-icon">🚚</div>
+                    <h3>Fleet Assignments</h3>
+                    <span class="badge" t-if="state.selectedFleetHistory.length">
+                        <t t-esc="state.selectedFleetHistory.length"/>
+                    </span>
+                </div>
+                <div class="details-card-body">
+                    <t t-if="state.selectedFleetHistory.length">
+                        <div class="modern-list">
+                            <t t-foreach="state.selectedFleetHistory" t-as="fh" t-key="fh.id">
+                                <div class="modern-list-item clickable-item"
+                                     t-on-click="openFleetHistory.bind(this, fh.id)"
+                                     t-att-data-id="fh.id">
+                                    <div class="item-main">
+                                        <div class="item-title">
+                                            <strong>🚛 <t t-esc="fh.fleet_name"/></strong>
+                                        </div>
+                                        <div class="item-meta">
+                                            <span class="meta-tag">
+                                                <span class="meta-icon">👤</span>
+                                                <t t-esc="fh.user"/>
+                                            </span>
+                                            <span class="meta-tag">
+                                                <span class="meta-icon">📅</span>
+                                                <t t-esc="fh.date"/>
+                                            </span>
+                                            <t t-if="fh.service_name">
+                                                <span class="meta-tag">
+                                                    <span class="meta-icon">🔧</span>
+                                                    <t t-esc="fh.service_name"/>
+                                                </span>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div>
+                            </t>
+                        </div>
+                    </t>
+                    <t t-if="!state.selectedFleetHistory.length">
+                        <div class="empty-details">
+                            <div class="empty-icon">🚫</div>
+                            <p>No fleet assignments</p>
+                        </div>
+                    </t>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</t>
+
+</templates>
